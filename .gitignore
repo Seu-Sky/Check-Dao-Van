@@ -1,0 +1,13 @@
+# Bỏ qua file môi trường chứa bí mật
+.env
+
+# Bỏ qua thư mục ảo (nếu có dùng venv)
+venv/
+env/
+
+# Bỏ qua các file rác của Python
+__pycache__/
+*.pyc
+
+# Bỏ qua thư mục upload ảnh tạm
+uploads/

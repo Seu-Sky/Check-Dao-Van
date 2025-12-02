@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Đạo Văn</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Đang quét dữ liệu trên toàn bộ Internet...</p>
+        <p style="font-size: 14px; color: #666;">(Vui lòng chờ khoảng 5-15 giây)</p>
+    </div>
+
+    <div class="main-wrapper">
+        <h1>Công Cụ Kiểm Tra Đạo Văn</h1>
+
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <div class="box">
+                <h3>Tải bài làm của bạn lên (Word/PDF):</h3>
+                <input type="file" name="file1" required accept=".docx, .pdf, .txt">
+                
+                <div class="text-box-container">
+                    {% if highlighted_content %}
+                        {{ highlighted_content | safe }}
+                    {% else %}
+                        {{ t1 if t1 else 'Nội dung file sẽ hiển thị ở đây sau khi tải lên...' }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="button-area">
+                <button type="submit">Check Đạo Văn</button>
+            </div>
+        </form>
+
+        {% if sources %}
+        <div class="result-section">
+            <div class="status-header status-danger">
+                <h2 style="margin: 0;">Phát hiện trùng lặp từ {{ sources|length }} nguồn:</h2>
+            </div>
+            <p style="margin-bottom: 20px;">Các đoạn văn bị trùng đã được <strong>bôi vàng</strong> ở văn bản phía trên.</p>
+            
+            <ul class="source-list">
+                {% for item in sources %}
+                <li class="source-item">
+                    <a href="{{ item.link }}" target="_blank" class="source-title">{{ item.title }}</a>
+                    <span class="source-link">🔗 {{ item.link }}</span>
+                    <div class="match-snippet">
+                        "{{ item.match_text }}"
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% elif t1 and not sources %}
+            <div class="result-section">
+                 <div class="status-header status-safe">
+                    <h2 style="margin: 0;">Tuyệt vời! Không tìm thấy nội dung trùng lặp.</h2>
+                 </div>
+                 <p>Văn bản này có vẻ là duy nhất trên Google tại thời điểm kiểm tra.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
